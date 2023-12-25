@@ -27,7 +27,7 @@ class HEMS:
             self.df = pd.read_csv(data_path)        
             self.epsilon = 1
             self.n_days = 2
-        #print(self.battery, self.max_en, self.eff, self.price_coefs, self.epsilon)
+        # print(self.battery, self.max_en, self.eff, self.price_coefs, self.epsilon)
         print(f'YOU HAVE INITIALISED YOUR HEMS (Home Energy Management System) WITH FOLLOWING SPECIFICATIONS:\nBattery size: {self.battery} kWh\nMax input/output energy per step: {self.max_en} kWh\nBattery efficiency: {int(self.eff * 100)}%\nEnergy selling price is set to {self.price_coefs[1]} * dataset market price\nEnergy buying price is set to {self.price_coefs[0]} * dataset market price\nDataset was loaded from: {path if load else data_path}')
         
     def train(self, a=3, b=3, n_episodes=200, epsilon_reduce=0.98, n_days=2, n_steps=7*24*4):
@@ -40,7 +40,7 @@ class HEMS:
         self.agent = dqn.DQN(envRL.next_observation_normalized().shape[0], 4)
 
         # TRAINING
-        print('Trainig in progress...')
+        print('Training in progress...')
         epsilon = self.epsilon
         for episode in tqdm(range(n_episodes)):
             epsilon = epsilon * epsilon_reduce
