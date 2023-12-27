@@ -4,7 +4,7 @@ import numpy as np
 # in a 15 minute interval
 
 class Env:
-    def __init__(self, df, full_battery_capacity=20, max_energy=6/4, eff=0.9, price_coefs=[2,1], n_days=2, n_steps=1000, low=0, high=30000, test=False):
+    def __init__(self, df, full_battery_capacity=20, max_energy=6/4, eff=0.9, price_coefs=[2, 1], n_days=2, n_steps=1000, low=0, high=30000, test=False):
         self.amount_paid = None
         self.market_price = None
         self.energy_consumption = None
@@ -123,7 +123,7 @@ class Env:
             'Time_of_Day'])
 
         reward = - self.amount_paid[self.window_size - 1]
-        terminated = self.current_step >= self.n_steps
+        terminated = self.current_step >= self.n_steps  # 判断是否为最后一步
         obs = self.next_observation()
         self.history.append(obs[:, self.window_size - 1])
         return obs, reward, terminated, data
@@ -139,13 +139,16 @@ class Env:
         amount_paid_now = None
         p_sell = smp * self.price_coefs[1]
         p_buy = smp * self.price_coefs[0]
-        
+
+        # 光伏发电，即energy generation
         e_pv_home = min(gen, cons)
         cons_old = cons
         gen_old = gen
+        # 减去消耗和产生之间的最小值
         cons = cons - e_pv_home
         gen = gen - e_pv_home
-        
+
+        # 选择放电和充电功率
         e_b_out = min(b_max, b) * self.eff
         e_b_in = min(b_max, self.full_battery_capacity - b) / self.eff
         
